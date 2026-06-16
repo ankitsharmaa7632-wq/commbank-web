@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using System.Linq;
+using Microsoft.Extensions.Options;
 using CommBank.Models;
 using CommBank.Services;
 
@@ -19,7 +20,7 @@ public class FakeGoalsService : IGoalsService
         await Task.FromResult(_goals);
 
     public async Task<List<Goal>?> GetForUserAsync(string id) =>
-        await Task.FromResult(_goals);
+        await Task.FromResult(_goals.Where(g => g.UserId == id).ToList());
 
     public async Task<Goal?> GetAsync(string id) =>
         await Task.FromResult(_goal);
@@ -29,7 +30,7 @@ public class FakeGoalsService : IGoalsService
 
     public async Task UpdateAsync(string id, Goal updatedGoal) =>
         await Task.FromResult(true);
-
+        
     public async Task RemoveAsync(string id) =>
         await Task.FromResult(true);
 }
