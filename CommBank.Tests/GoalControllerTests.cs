@@ -61,14 +61,27 @@ public class GoalControllerTests
         Assert.Equal(goals[0], result.Value);
         Assert.NotEqual(goals[1], result.Value);
     }
-
     [Fact]
-    public async void GetForUser()
+public async void GetForUser()
+{
+    var goals = collections.GetGoals();
+    var users = collections.GetUsers();
+
+    IGoalsService goalsService = new FakeGoalsService(goals, goals[0]);
+    IUsersService usersService = new FakeUsersService(users, users[0]);
+
+    GoalController controller = new(goalsService, usersService);
+
+    var httpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext();
+    controller.ControllerContext.HttpContext = httpContext;
+
+    var result = await controller.GetdoForUser(users[0].Id);
+
+    Assert.NotNull(result);
+
+    foreach (Goal goal in result)
     {
-        // Arrange
-        
-        // Act
-        
-        // Assert
+        Assert.Equal(users[0].Id, goal.UserId);
     }
+}
 }
